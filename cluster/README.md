@@ -1,68 +1,39 @@
-# 0. Simple Cluster creation plaintext
+# Example for Monitoring Confluent Platform with Prometheus and Grafana based on Docker
 
-0. Create a new cluster without securization based
-   on [kafka-docker-playground plaintext cluster](https://github.com/vdesabou/kafka-docker-playground/blob/master/environment/plaintext/docker-compose.yml)
-1. Disable ksqldb and connect server from default start
-2. Create a topic with 2 partitions each partition with 1 replica
-3. Create a local producer which produces for the cluster
-4. Create a local consumer which consumes from the cluster
+# Preconditions
 
-## Create the new cluster
+This project has been tested with Java version 17 and Gradle version 8.1.1.
 
-Review Create a new cluster without securization based
-on [kafka-docker-playground plaintext cluster](https://github.com/vdesabou/kafka-docker-playground/blob/master/environment/plaintext/docker-compose.yml).
+## Running Confluent Platform
+Start the containers by running:
+````
+docker-compose up -d
+````
 
+Stopping the containers:
+````
+docker-compose down
+````
 
-## Create a simple maven project
+Cleaning up (CAREFUL: THIS WILL DELETE ALL UNUSED VOLUMES):
+````
+docker volumes prune
+````
 
-0. Using maven archetype
+## Building the Producers
+Initialize by running
+````
+gradle wrapper
+````
 
-   mvn archetype:generate \
-   -DarchetypeGroupId=org.apache.maven.archetypes \
-   -DarchetypeArtifactId=maven-archetype-quickstart
+Build Jar including all libraries with:
+````
+./gradlew shadowJar
+````
 
-1. Set java version to 11 and add the main class
+## Running
 
-```xml
+````
+java -jar producer-7.2.1/build/libs/kafka-producer-7.2.1-0.0.1.jar configuration/dev.properties input.txt
+````
 
-   <properties>
-       <java.version>11</java.version>
-   </properties>
-   
-   <build>
-      <pluginManagement>
-          <plugins>
-              <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-compiler-plugin</artifactId>
-                  <version>3.10.1</version>
-                  <configuration>
-                      <source>${java.version}</source>
-                      <target>${java.version}</target>
-                  </configuration>
-              </plugin>
-              <plugin>
-                  <groupId>org.apache.maven.plugins</groupId>
-                  <artifactId>maven-jar-plugin</artifactId>
-                  <version>2.4</version>
-                  <configuration>
-                      <archive>
-                          <manifest>
-                              <mainClass>io.confluent.csta.examples.security.App</mainClass>
-                          </manifest>
-                      </archive>
-                  </configuration>
-              </plugin>
-          </plugins>
-      </pluginManagement>
-   </build>
-```
-
-## Solution
-
-Run using
-
-```
-   mvn clean package 
-   java -jar target/examples-security-1.0.0-SNAPSHOT-jar-with-dependencies.jar config.properties
-```
