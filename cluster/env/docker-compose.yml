@@ -1,0 +1,159 @@
+---
+version: "3.5"
+
+# YAML pointer feature to reuse parts of the config
+x-broker-common-settings: &broker-common-settings
+  KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-1:2181'
+  # listeners
+  KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: DOCKER:PLAINTEXT,HOST:PLAINTEXT
+  KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+  # metrics
+  KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+  CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: "kafka-1:9092,kafka-2:9092,kafka-3:9092"
+  CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+  CONFLUENT_METRICS_ENABLE: 'true'
+  # interesting features
+  KAFKA_DELETE_TOPIC_ENABLE: 'true'
+  KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'false'
+
+services:
+  zookeeper-1:
+    image: confluentinc/cp-zookeeper:7.1.2
+    hostname: zookeeper-1
+    container_name: zookeeper-1
+    restart: always
+    ports:
+      - "2181:2181"
+      - "2180:2180"
+    networks:
+      - confluent
+    volumes:
+      - data-zookeeper-log:/var/lib/zookeeper/log
+      - data-zookeeper-data:/var/lib/zookeeper/data
+    environment:
+      - ZOOKEEPER_CLIENT_PORT=2181
+      - ZOOKEEPER_TICK_TIME=2000
+      - ZOOKEEPER_JMX_HOSTNAME=zookeeper-1
+      - ZOOKEEPER_JMX_PORT=2180
+
+  kafka-1:
+    image:  confluentinc/cp-enterprise-kafka:7.1.2
+    hostname: kafka-1
+    container_name: kafka-1
+    restart: always
+    ports:
+      - "19092:19092"
+      - "10091:10091"
+    networks:
+      - confluent
+    volumes:
+      - data-kafka-1:/var/lib/kafka/data
+    environment:
+      <<: *broker-common-settings
+      KAFKA_BROKER_ID: 101
+      # listeners
+      KAFKA_LISTENERS: DOCKER://:9092,HOST://:19092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka-1:9092,HOST://kafka-1:19092
+      # jmx
+      KAFKA_JMX_HOSTNAME: kafka-1
+      KAFKA_JMX_PORT: 10091
+
+  kafka-2:
+    image:  confluentinc/cp-enterprise-kafka:7.1.2
+    hostname: kafka-2
+    container_name: kafka-2
+    restart: always
+    ports:
+      - "29092:29092"
+      - "20091:20091"
+    networks:
+      - confluent
+    volumes:
+      - data-kafka-2:/var/lib/kafka/data
+    environment:
+      <<: *broker-common-settings
+      KAFKA_BROKER_ID: 102
+      # listeners
+      KAFKA_LISTENERS: DOCKER://:9092,HOST://:29092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka-2:9092,HOST://kafka-2:29092
+      # jmx
+      KAFKA_JMX_HOSTNAME: kafka-2
+      KAFKA_JMX_PORT: 20091
+
+  kafka-3:
+    image:  confluentinc/cp-enterprise-kafka:7.1.2
+    hostname: kafka-3
+    container_name: kafka-3
+    restart: always
+    ports:
+      - "39092:39092"
+      - "30091:30091"
+    networks:
+      - confluent
+    volumes:
+      - data-kafka-3:/var/lib/kafka/data
+    environment:
+      <<: *broker-common-settings
+      KAFKA_BROKER_ID: 103
+      # listeners
+      KAFKA_LISTENERS: DOCKER://:9092,HOST://:39092
+      KAFKA_ADVERTISED_LISTENERS: DOCKER://kafka-3:9092,HOST://kafka-3:39092
+      # jmx
+      KAFKA_JMX_HOSTNAME: kafka-3
+      KAFKA_JMX_PORT: 30091
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.1.2
+    hostname: schema-registry
+    container_name: schema-registry
+    restart: always
+    depends_on:
+      - kafka-1
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - confluent
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: "kafka-1:9092,kafka-2:9092,kafka-3:9092"
+      # JMX
+      SCHEMA_REGISTRY_JMX_HOSTNAME: schema-registry
+      SCHEMA_REGISTRY_JMX_PORT: 8080
+
+  control-center:
+    image: confluentinc/cp-enterprise-control-center:7.1.2
+    hostname: control-center
+    container_name: control-center
+    restart: always
+    depends_on:
+      - kafka-1
+      - schema-registry
+    ports:
+      - "9021:9021"
+    networks:
+      - confluent
+    environment:
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: kafka-1:9092,kafka-2:9092,kafka-3:9092
+      CONTROL_CENTER_ZOOKEEPER_CONNECT: 'zookeeper-1:2181'
+      CONTROL_CENTER_STREAMS_NUM_STREAM_THREADS: 4
+      CONTROL_CENTER_REPLICATION_FACTOR: 1
+      CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
+      CONTROL_CENTER_MONITORING_INTERCEPTOR_TOPIC_PARTITIONS: 1
+      CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+      CONFLUENT_METRICS_TOPIC_REPLICATION: 1
+      CONTROL_CENTER_KAFKA_MYCLUSTER_BOOTSTRAP_SERVERS: 'kafka-1:9092'
+      CONTROL_CENTER_UI_AUTOUPDATE_ENABLE: "false"
+      CONTROL_CENTER_COMMAND_TOPIC_REPLICATION: 1
+      CONTROL_CENTER_METRICS_TOPIC_REPLICATION: 1
+
+volumes:
+  data-zookeeper-log:
+  data-zookeeper-data:
+  data-kafka-1:
+  data-kafka-2:
+  data-kafka-3:
+
+networks:
+  confluent:
