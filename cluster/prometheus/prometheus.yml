@@ -43,3 +43,17 @@ scrape_configs:
   
     static_configs:
       - targets: ['node-exporter:9101']
+
+  - job_name: 'kafka-broker'
+    scrape_interval: 30s
+    scrape_timeout: 30s
+    static_configs:
+      - targets:
+        - 'jmx-exporter-kafka:5556'
+        labels:
+          env: 'dev'
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: hostname
+        regex: '([^:]+)(:[0-9]+)?'
+        replacement: '${1}'

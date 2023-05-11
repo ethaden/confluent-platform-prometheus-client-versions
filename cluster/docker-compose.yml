@@ -54,13 +54,27 @@ services:
       # During initialization of the JMX session, the external client (e.g. JConsole) will query that hostname and the JMX port and tries to connect to it
       # Thus, in general using something like e.g. "localhost" or "kafka" won't work
       # Set environment variable EXTERNAL_HOSTNAME to your external resolvable hostname
-      KAFKA_JMX_HOSTNAME: ${EXTERNAL_HOSTNAME}
+      #KAFKA_JMX_HOSTNAME: ${EXTERNAL_HOSTNAME}
+      # Use this hostname to allow connections from jmx exporter running in another docker container
+      KAFKA_JMX_HOSTNAME: kafka
       KAFKA_JMX_PORT: 10091
     healthcheck:
       test: kafka-broker-api-versions --bootstrap-server localhost:9092
       interval: 10s
       retries: 25
       start_period: 20s
+
+  jmx-exporter-kafka:
+    image: bitnami/jmx-exporter:latest
+    hostname: jmx-exporter-kafka
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - '5556:5556'
+    volumes:
+      - ./jmx-exporter/kafka/config.yml:/etc/config.yml
+    command: ["5556", "/etc/config.yml"]
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:${TAG}
@@ -72,7 +86,8 @@ services:
     ports:
       - "9021:9021"
     environment:
-      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:29092'
+      #CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:29092'
+      CONTROL_CENTER_BOOTSTRAP_SERVERS: 'kafka:9092'
       CONTROL_CENTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
       CONTROL_CENTER_REPLICATION_FACTOR: 1
       CONTROL_CENTER_INTERNAL_TOPICS_PARTITIONS: 1
@@ -97,6 +112,7 @@ services:
       interval: 10s
       retries: 20
       test: curl http://localhost:8081/ --output /dev/null || exit 1
+
   prometheus:
     hostname: prometheus
     image: prom/prometheus:latest
@@ -124,6 +140,7 @@ services:
     restart: always
     deploy:
       mode: global
+
   alertmanager:
     image: prom/alertmanager
     ports:
@@ -134,9 +151,28 @@ services:
     command:
       - '--config.file=/etc/alertmanager/config.yml'
       - '--storage.path=/alertmanager'
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus
+    logging:
+      driver: local
+    volumes:
+      - data-grafana:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+    environment:
+      - "GF_SECURITY_ADMIN_USER=kafka"
+      - "GF_SECURITY_ADMIN_PASSWORD=kafka"
+      - "GF_USERS_ALLOW_SIGN_UP=false"
+    ports:
+      - 3000:3000
+  ubuntu:
+    image: ubuntu
+    tty: true
 
 volumes:
   data-zookeeper-log:
   data-zookeeper-data:
   data-kafka:
   data-prometheus:
+  data-grafana:
