@@ -6,10 +6,14 @@ services:
     image: confluentinc/cp-zookeeper:${TAG}
     ports:
       - '32181:32181'
+      - '11091:11091'
     environment:
       ZOOKEEPER_CLIENT_PORT: 32181
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: WARN
+      KAFKA_JMX_PORT: 11091
+      KAFKA_JMX_HOSTNAME: zookeeper
+      #ZOOKEEPER_SERVER_OPTS: "-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.rmi.port=11091"
     volumes:
       - data-zookeeper-log:/var/lib/zookeeper/log
       - data-zookeeper-data:/var/lib/zookeeper/data
@@ -17,7 +21,19 @@ services:
       interval: 10s
       retries: 25
       test: echo srvr | nc zookeeper 32181 || exit 1
-      
+
+  jmx-exporter-zookeeper:
+    image: bitnami/jmx-exporter:latest
+    hostname: jmx-exporter-kafka
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    ports:
+      - '5557:5557'
+    volumes:
+      - ./jmx-exporter/zookeeper/config.yml:/etc/config.yml
+    command: ["5557", "/etc/config.yml"]
+
   kafka:
     hostname: kafka
     image: confluentinc/cp-server:${TAG}

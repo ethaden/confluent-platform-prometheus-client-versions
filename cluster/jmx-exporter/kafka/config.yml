@@ -1,10 +1,6 @@
 ---
 startDelaySeconds: 0
-#hostPort: kafka:10091
-#username: 
-#password: 
 jmxUrl: service:jmx:rmi://kafka:10091/jndi/rmi://kafka:10091/jmxrmi
-#jmxUrl: kafka:10091
 ssl: false
 lowercaseOutputName: true
 lowercaseOutputLabelNames: true
