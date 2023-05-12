@@ -2,3 +2,4 @@ build
 .gradle
 clients/*/bin
 clients/*/target
+.vscode
