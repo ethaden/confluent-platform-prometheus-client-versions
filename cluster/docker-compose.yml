@@ -31,7 +31,7 @@ services:
     ports:
       - '5557:5557'
     volumes:
-      - ./jmx-exporter/zookeeper/config.yml:/etc/config.yml
+      - ./docker/jmx-exporter/zookeeper/config.yml:/etc/config.yml
     command: ["5557", "/etc/config.yml"]
 
   kafka:
@@ -45,6 +45,7 @@ services:
         condition: service_healthy
     volumes:
       - data-kafka:/var/lib/kafka/data
+      - ./docker/kafka/log4j.properties.template:/etc/confluent/docker/log4j.properties.template:ro
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:32181
@@ -56,7 +57,9 @@ services:
       KAFKA_MIN_INSYNC_REPLICAS: 1
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_LOG4J_ROOT_LOGLEVEL: WARN
-      KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.request.logger=INFO"
+      #KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.request.logger=INFO"
+      # Extracting client version, ID and principal from request logger while filtering most messages
+      KAFKA_LOG4J_LOGGERS: "kafka.request.logger=DEBUG"
       KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1 # license config
       KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1 # Self-balancing cluster
       KAFKA_DELETE_TOPIC_ENABLE: "true"
@@ -89,7 +92,7 @@ services:
     ports:
       - '5556:5556'
     volumes:
-      - ./jmx-exporter/kafka/config.yml:/etc/config.yml
+      - ./docker/jmx-exporter/kafka/config.yml:/etc/config.yml
     command: ["5556", "/etc/config.yml"]
 
   control-center:
@@ -135,7 +138,7 @@ services:
     ports:
       - 9090:9090
     volumes:
-      - ./prometheus/:/etc/prometheus/
+      - ./docker/prometheus/:/etc/prometheus/
       - data-prometheus:/prometheus
   node-exporter:
     image: quay.io/prometheus/node-exporter:latest
@@ -162,7 +165,7 @@ services:
     ports:
       - 9093:9093
     volumes:
-      - ./alertmanager/:/etc/alertmanager/
+      - ./docker/alertmanager/:/etc/alertmanager/
     restart: always
     command:
       - '--config.file=/etc/alertmanager/config.yml'
@@ -175,7 +178,7 @@ services:
       driver: local
     volumes:
       - data-grafana:/var/lib/grafana
-      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./docker/grafana/provisioning/:/etc/grafana/provisioning/
     environment:
       - "GF_SECURITY_ADMIN_USER=kafka"
       - "GF_SECURITY_ADMIN_PASSWORD=kafka"

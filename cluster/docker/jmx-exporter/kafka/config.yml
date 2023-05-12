@@ -5,6 +5,8 @@ ssl: false
 lowercaseOutputName: true
 lowercaseOutputLabelNames: true
 rules:
+# Catch all (don't use, only for debugging!)
+#- pattern: ".*"
 # Special cases and very specific rules
 - pattern : kafka.server<type=(.+), name=(.+), clientId=(.+), topic=(.+), partition=(.*)><>Value
   name: kafka_server_$1_$2
