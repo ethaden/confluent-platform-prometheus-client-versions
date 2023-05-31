@@ -1,5 +1,7 @@
 = Example for Monitoring Confluent Platform with Prometheus and Grafana based on Docker
 
+DISCLAIMER: This project is for demonstration purposes only. Using the concept in production is highly discouraged. Use at your own risk.
+
 == Preconditions
 
 This project has been tested with Java version 17 and Gradle version 8.1.1.
@@ -64,6 +66,8 @@ java -jar producer-7.2.1/build/libs/kafka-producer-7.2.1-0.0.1.jar configuration
 
 == Changing the runtime debug level
 
+Note, the docker setup already sets the log level of the request logger to debug. The following explains how to set that log level at runtime.
+
 Show dynamic configs for the broker (broker id is `1` thus we use entity name `1`):
 ```
 kafka-configs --bootstrap-server localhost:10092 --describe \
@@ -88,3 +92,74 @@ kafka-configs --bootstrap-server localhost:10092 --alter \
 --delete-config kafka.request.logger \
 --entity-type broker-loggers --entity-name 1
 ```
+
+
+== Results
+
+You can follow the logs of the docker container running the Kafka broker by running this command in the `cluster` subfolder (exit with `Ctrl-c`):
+
+```
+docker-compose logs -f kafka
+```
+
+Whenever a client connects, lines similar to the following will appear in the docker log of the kafka broker.
+
+```
+kafka_1                   | [2023-05-31 16:47:32,815] INFO Completed request:{"isForwarded":false,"requestHeader":{"requestApiKey":18,"requestApiVersion":3,"correlationId":0,"clientId":"producer-7.2.1","requestApiKeyName":"API_VERSIONS"},"request":{"clientSoftwareName":"apache-kafka-java","clientSoftwareVersion":"7.2.1-ccs"}
+.......
+```
+
+The client ID and the client software version can easily be extracted from those lines.
+
+== How it works
+
+Note that most of the other debug messages are filtered by the log4j configuration file, that is generated when the docker container running the Kafka broker starts using the template found in `cluster/docker/kafka/log4j.properties.template`.
+
+The result of rendering that template is the following:
+
+```
+log4j.rootLogger=WARN, stdout
+
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.ConversionPattern=[%d] %p %m (%c)%n
+# Allow everthing with log level FATAL, ERROR and WARN
+log4j.appender.stdout.filter.01=org.apache.log4j.varia.LevelMatchFilter
+log4j.appender.stdout.filter.01.level=FATAL
+log4j.appender.stdout.filter.01.AcceptOnMatch=true
+log4j.appender.stdout.filter.02=org.apache.log4j.varia.LevelMatchFilter
+log4j.appender.stdout.filter.02.level=ERROR
+log4j.appender.stdout.filter.02.AcceptOnMatch=true
+log4j.appender.stdout.filter.03=org.apache.log4j.varia.LevelMatchFilter
+log4j.appender.stdout.filter.03.level=WARN
+log4j.appender.stdout.filter.03.AcceptOnMatch=true
+# Allow certain request log debug information: We just want to see initial version information
+log4j.appender.stdout.filter.04=org.apache.log4j.varia.StringMatchFilter
+log4j.appender.stdout.filter.04.StringToMatch="requestApiKeyName":"API_VERSIONS"
+log4j.appender.stdout.filter.04.AcceptOnMatch=true
+# Filter all other unwanted request log debug information
+log4j.appender.stdout.filter.05=org.apache.log4j.varia.StringMatchFilter
+log4j.appender.stdout.filter.05.StringToMatch=Completed request
+log4j.appender.stdout.filter.05.AcceptOnMatch=false
+# Filter internal traffic
+log4j.appender.stdout.filter.06=org.apache.log4j.varia.StringMatchFilter
+log4j.appender.stdout.filter.06.StringToMatch="listener":"IN_DOCKER"
+log4j.appender.stdout.filter.06.AcceptOnMatch=false
+log4j.appender.stdout.filter.07=org.apache.log4j.varia.StringMatchFilter
+log4j.appender.stdout.filter.07.StringToMatch="listener":"INTERNAL"
+log4j.appender.stdout.filter.07.AcceptOnMatch=false
+
+INFO Completed request
+
+
+log4j.logger.kafka=INFO
+log4j.logger.kafka.network.RequestChannel$=WARN
+log4j.logger.kafka.producer.async.DefaultEventHandler=DEBUG
+log4j.logger.kafka.request.logger=DEBUG
+log4j.logger.kafka.controller=TRACE
+log4j.logger.kafka.log.LogCleaner=INFO
+log4j.logger.state.change.logger=TRACE
+log4j.logger.kafka.authorizer.logger=WARN
+```
+
+The magic is to use the `filter` to allow all critical events first (`FATAL`, `ERROR`, `WARN`). Then all lines where the API_Version is requested are allowed. Finally, all other debug messages are filtered.
