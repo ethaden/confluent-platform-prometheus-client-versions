@@ -68,6 +68,10 @@ java -jar producer-7.2.1/build/libs/kafka-producer-7.2.1-0.0.1.jar configuration
 |JMX Exporter for the Zookeeper
 |http://localhost:11091
 |
+
+|Prometheus Node Exporter
+|http://localhost:9101
+|
 |===
 
 == Changing the runtime debug level
