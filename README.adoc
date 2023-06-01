@@ -43,25 +43,31 @@ java -jar producer-7.2.1/build/libs/kafka-producer-7.2.1-0.0.1.jar configuration
 
 == Using the Example Platform
 
-[cols=2*, options=header]
+[cols=3*, options=header]
 |===
 |Tool
 |URL
+|Note
 
 |Kafka Broker
 |http://localhost:10092
+|
 
 |Prometheus
 |http://localhost:9090
+|
 
 |Grafana
 |http://localhost:3000
+|Login: "kafka", Password: "kafka"
 
 |JMX Exporter for the Kafka Broker
 |http://localhost:10091
+|
 
 |JMX Exporter for the Zookeeper
 |http://localhost:11091
+|
 |===
 
 == Changing the runtime debug level
