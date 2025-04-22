@@ -50,7 +50,7 @@ java -jar producer-7.2.1/build/libs/kafka-producer-7.2.1-0.0.1.jar configuration
 |Note
 
 |Kafka Broker
-|http://localhost:10092
+|http://localhost:9092
 |
 
 |Prometheus

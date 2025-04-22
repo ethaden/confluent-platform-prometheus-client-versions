@@ -57,15 +57,3 @@ scrape_configs:
         target_label: hostname
         regex: '([^:]+)(:[0-9]+)?'
         replacement: '${1}'
-
-  - job_name: "zookeeper"
-    static_configs:
-      - targets:
-          - 'jmx-exporter-kafka:5557'
-        labels:
-          env: "dev"
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: hostname
-        regex: '([^:]+)(:[0-9]+)?'
-        replacement: '${1}'

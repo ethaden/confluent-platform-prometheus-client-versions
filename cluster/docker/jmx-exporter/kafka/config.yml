@@ -1,6 +1,6 @@
 ---
 startDelaySeconds: 0
-jmxUrl: service:jmx:rmi://kafka:10091/jndi/rmi://kafka:10091/jmxrmi
+jmxUrl: service:jmx:rmi://broker:10091/jndi/rmi://broker:10091/jmxrmi
 ssl: false
 lowercaseOutputName: true
 lowercaseOutputLabelNames: true
