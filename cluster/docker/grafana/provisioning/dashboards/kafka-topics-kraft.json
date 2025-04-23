@@ -160,8 +160,9 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(kafka_controller_kafkacontroller_globaltopiccount{job=\"kafka-broker\",env=~\"$env\"})",
+          "expr": "sum(kafka_controller_kafkacontroller_globaltopiccount{job=\"kafka-controller\",env=~\"$env\"})",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -426,8 +427,9 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
+          "editorMode": "code",
           "exemplar": true,
-          "expr": "sum(kafka_controller_kafkacontroller_globalpartitioncount{job=\"kafka-broker\",env=~\"$env\"})",
+          "expr": "sum(kafka_controller_kafkacontroller_globalpartitioncount{job=\"kafka-controller\",env=~\"$env\"})",
           "instant": true,
           "interval": "",
           "legendFormat": "",
@@ -649,6 +651,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -662,6 +665,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -684,7 +688,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -748,6 +753,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -761,6 +767,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -783,7 +790,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -870,6 +878,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
+            "align": "auto",
             "cellOptions": {
               "type": "auto"
             },
@@ -881,7 +890,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -966,7 +976,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.15",
+      "pluginVersion": "10.2.0",
       "targets": [
         {
           "datasource": {
@@ -1021,6 +1031,7 @@
       "fieldConfig": {
         "defaults": {
           "custom": {
+            "align": "auto",
             "cellOptions": {
               "type": "auto"
             },
@@ -1032,7 +1043,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1105,7 +1117,7 @@
           }
         ]
       },
-      "pluginVersion": "9.5.15",
+      "pluginVersion": "10.2.0",
       "targets": [
         {
           "datasource": {
@@ -1176,6 +1188,7 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisBorderShow": false,
             "axisCenteredZero": false,
             "axisColorMode": "text",
             "axisLabel": "",
@@ -1189,6 +1202,7 @@
               "tooltip": false,
               "viz": false
             },
+            "insertNulls": false,
             "lineInterpolation": "linear",
             "lineWidth": 1,
             "pointSize": 5,
@@ -1211,7 +1225,8 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
+                "color": "green",
+                "value": null
               },
               {
                 "color": "red",
@@ -1447,6 +1462,6 @@
   "timezone": "",
   "title": "Kafka Topics",
   "uid": "vQT4b1-Mz",
-  "version": 1,
+  "version": 3,
   "weekStart": ""
 }

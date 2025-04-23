@@ -25,6 +25,12 @@
     },
     {
       "type": "panel",
+      "id": "stat",
+      "name": "Stat",
+      "version": ""
+    },
+    {
+      "type": "panel",
       "id": "timeseries",
       "name": "Time series",
       "version": ""
@@ -52,6 +58,7 @@
       }
     ]
   },
+  "description": "Monitor Kafka Transaction Coordinator",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
@@ -60,91 +67,76 @@
   "liveNow": false,
   "panels": [
     {
+      "collapsed": false,
       "datasource": {
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "Indicates the data produce rate of the client in bytes/sec",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "Bps"
-        },
-        "overrides": []
-      },
       "gridPos": {
-        "h": 12,
-        "w": 8,
+        "h": 1,
+        "w": 24,
         "x": 0,
         "y": 0
       },
-      "id": 6,
+      "id": 199,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Transaction Count",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 7,
+        "y": 1
+      },
+      "id": 212,
       "options": {
-        "legend": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
           "calcs": [
-            "lastNotNull",
-            "max",
             "mean"
           ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
+          "fields": "",
+          "values": false
         },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
+        "text": {},
+        "textMode": "auto"
       },
-      "pluginVersion": "8.1.3",
+      "pluginVersion": "10.2.0",
       "targets": [
         {
           "datasource": {
@@ -152,21 +144,146 @@
             "uid": "Prometheus"
           },
           "exemplar": true,
-          "expr": "topk(10, kafka_server_produce_byte_rate{user=~\"$user\",client_id=~\"$client_id\",instance=~\"$broker_id\",env=\"$env\",job=\"kafka-broker\"})",
+          "expr": "sum(kafka_server_transaction_coordinator_metrics_transaction_timeout_count{job=\"kafka-broker\", env=\"$env\",instance=~\"$instance\"})",
+          "instant": true,
           "interval": "",
-          "legendFormat": "User: {{ user }} - Client: {{ client_id }} @ Broker: {{ instance }}",
+          "legendFormat": "",
           "refId": "A"
         }
       ],
-      "title": "Produce Byte Rate",
-      "type": "timeseries"
+      "title": "Transaction Timeout Count",
+      "type": "stat"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "Indicates the data consume rate of the client in bytes/sec",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 11,
+        "y": 1
+      },
+      "id": 235,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "exemplar": true,
+          "expr": "sum(\nkafka_server_transaction_coordinator_metrics_transaction_state_error_count{job=\"kafka-broker\", env=\"$env\",instance=~\"$instance\"})",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Transaction Error Count",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "mappings": [],
+          "noValue": "0",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 4,
+        "x": 15,
+        "y": 1
+      },
+      "id": 246,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "10.2.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "exemplar": true,
+          "expr": "sum(\nkafka_server_transaction_coordinator_metrics_transactional_id_count{job=\"kafka-broker\", env=\"$env\",instance=~\"$instance\"})",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Transaction Id Count",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "description": "The rate at which transactions are timed out by the coordinator",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -180,7 +297,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -194,8 +311,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
-            "spanNulls": true,
+            "showPoints": "auto",
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -204,7 +321,6 @@
               "mode": "off"
             }
           },
-          "links": [],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -219,25 +335,21 @@
               }
             ]
           },
-          "unit": "Bps"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
-        "w": 8,
-        "x": 8,
-        "y": 0
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 4
       },
-      "id": 7,
+      "id": 249,
       "options": {
         "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max",
-            "mean"
-          ],
-          "displayMode": "table",
+          "calcs": [],
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -246,7 +358,6 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.1.3",
       "targets": [
         {
           "datasource": {
@@ -254,13 +365,13 @@
             "uid": "Prometheus"
           },
           "exemplar": true,
-          "expr": "topk(10, kafka_server_fetch_byte_rate{user=~\"$user\",client_id=~\"$client_id\",instance=~\"$broker_id\",env=\"$env\",job=\"kafka-broker\"})",
+          "expr": "kafka_server_transaction_coordinator_metrics_transaction_timeout_rate{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "User: {{ user }} - Client: {{ client_id }} @ Broker: {{ instance }}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "title": "Fetch Byte Rate",
+      "title": "Timeout Rate",
       "type": "timeseries"
     },
     {
@@ -268,7 +379,7 @@
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "Indicates the percentage of time spent in broker network and I/O threads to process requests from client group",
+      "description": "The rate at which transactions are timed out by the coordinator",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -282,7 +393,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -296,8 +407,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
-            "spanNulls": true,
+            "showPoints": "auto",
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -306,7 +417,6 @@
               "mode": "off"
             }
           },
-          "links": [],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -321,25 +431,21 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "short"
         },
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
-        "w": 8,
-        "x": 16,
-        "y": 0
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 4
       },
-      "id": 8,
+      "id": 255,
       "options": {
         "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max",
-            "mean"
-          ],
-          "displayMode": "table",
+          "calcs": [],
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -348,7 +454,6 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.1.3",
       "targets": [
         {
           "datasource": {
@@ -356,123 +461,47 @@
             "uid": "Prometheus"
           },
           "exemplar": true,
-          "expr": "topk(10, kafka_server_request_request_time{user=~\"$user\",client_id=~\"$client_id\",instance=~\"$broker_id\",env=\"$env\",job=\"kafka-broker\"})",
+          "expr": "kafka_server_transaction_coordinator_metrics_transaction_timeout_rate{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "User: {{ user }} - Client: {{ client_id }} @ Broker: {{ instance }}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "title": "Request Time",
+      "title": "Timeout Rate",
       "type": "timeseries"
     },
     {
+      "collapsed": false,
       "datasource": {
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "Indicates the amount of time in ms the client was throttled",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisBorderShow": false,
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 10,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "insertNulls": false,
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": true,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "links": [],
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "ms"
-        },
-        "overrides": []
-      },
       "gridPos": {
-        "h": 12,
-        "w": 8,
+        "h": 1,
+        "w": 24,
         "x": 0,
         "y": 12
       },
-      "id": 3,
-      "options": {
-        "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max",
-            "mean"
-          ],
-          "displayMode": "table",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.1.3",
+      "id": 245,
+      "panels": [],
       "targets": [
         {
           "datasource": {
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "exemplar": true,
-          "expr": "kafka_server_produce_throttle_time{user=~\"$user\",client_id=~\"$client_id\",instance=~\"$broker_id\",env=\"$env\",job=\"kafka-broker\"} > 0",
-          "interval": "",
-          "legendFormat": "User: {{ user }} - Client: {{ client_id }} @ Broker: {{ instance }}",
           "refId": "A"
         }
       ],
-      "title": "Produce Bandwidth Throttle",
-      "type": "timeseries"
+      "title": "Transaction Time",
+      "type": "row"
     },
     {
       "datasource": {
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "Indicates the amount of time in ms the client was throttled",
+      "description": "The max time a currently-open transaction has been open",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -486,7 +515,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -500,8 +529,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
-            "spanNulls": true,
+            "showPoints": "auto",
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -510,7 +539,6 @@
               "mode": "off"
             }
           },
-          "links": [],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -530,20 +558,16 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
-        "w": 8,
-        "x": 8,
-        "y": 12
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 13
       },
-      "id": 5,
+      "id": 248,
       "options": {
         "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max",
-            "mean"
-          ],
-          "displayMode": "table",
+          "calcs": [],
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -552,7 +576,6 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.1.3",
       "targets": [
         {
           "datasource": {
@@ -560,13 +583,13 @@
             "uid": "Prometheus"
           },
           "exemplar": true,
-          "expr": "kafka_server_fetch_throttle_time{user=~\"$user\",client_id=~\"$client_id\",instance=~\"$broker_id\",env=\"$env\",job=\"kafka-broker\"} > 0",
+          "expr": "kafka_server_transaction_coordinator_metrics_active_transaction_total_time_max{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "User: {{ user }} - Client: {{ client_id }} @ Broker: {{ instance }}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "title": "Fetch Bandwidth Throttle",
+      "title": "Open Transaction Max Time",
       "type": "timeseries"
     },
     {
@@ -574,7 +597,7 @@
         "type": "prometheus",
         "uid": "Prometheus"
       },
-      "description": "Indicates the amount of time in ms the client was throttled",
+      "description": "The avg time it took for a transaction to transit from PrepareCommit to CompleteCommit state in the last 30sec",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -588,7 +611,7 @@
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
-            "fillOpacity": 10,
+            "fillOpacity": 0,
             "gradientMode": "none",
             "hideFrom": {
               "legend": false,
@@ -602,8 +625,8 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
-            "spanNulls": true,
+            "showPoints": "auto",
+            "spanNulls": false,
             "stacking": {
               "group": "A",
               "mode": "none"
@@ -612,7 +635,6 @@
               "mode": "off"
             }
           },
-          "links": [],
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -632,20 +654,16 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 12,
-        "w": 8,
-        "x": 16,
-        "y": 12
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 13
       },
-      "id": 4,
+      "id": 250,
       "options": {
         "legend": {
-          "calcs": [
-            "lastNotNull",
-            "max",
-            "mean"
-          ],
-          "displayMode": "table",
+          "calcs": [],
+          "displayMode": "list",
           "placement": "bottom",
           "showLegend": true
         },
@@ -654,7 +672,6 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "8.1.3",
       "targets": [
         {
           "datasource": {
@@ -662,13 +679,309 @@
             "uid": "Prometheus"
           },
           "exemplar": true,
-          "expr": "kafka_server_request_throttle_time{user=~\"$user\",client_id=~\"$client_id\",instance=~\"$broker_id\",env=\"$env\",job=\"kafka-broker\"} > 0",
+          "expr": "kafka_server_transaction_coordinator_metrics_prepare_commit_to_complete_commit_latency{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}",
           "interval": "",
-          "legendFormat": "User: {{ user }} - Client: {{ client_id }} @ Broker: {{ instance }}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
-      "title": "Request Throttle",
+      "title": "From  PrepareCommit to CompleteCommit Avg Time",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 254,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "refId": "A"
+        }
+      ],
+      "title": "Transaction Partitions (__transaction_state)",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "description": "The total size of the partitions owned by the transaction coordinator",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 22
+      },
+      "id": 252,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "exemplar": true,
+          "expr": "kafka_server_transaction_coordinator_metrics_partitions_total_size{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Partitions owned by tx coordinator",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "description": "The max time it took to load the partitions in the last 30sec",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 22
+      },
+      "id": 256,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "exemplar": true,
+          "expr": "kafka_server_transaction_coordinator_metrics_partition_load_time_max{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Max Time to load partitions by tx coordinator",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "Prometheus"
+      },
+      "description": "The avg time it took to load the partitions in the last 30sec",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 257,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "Prometheus"
+          },
+          "exemplar": true,
+          "expr": "kafka_server_transaction_coordinator_metrics_partition_load_time_avg{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}",
+          "interval": "",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Avg Time to load partitions by tx coordinator",
       "type": "timeseries"
     }
   ],
@@ -678,6 +991,7 @@
   "templating": {
     "list": [
       {
+        "allValue": ".+",
         "current": {},
         "datasource": {
           "type": "prometheus",
@@ -691,8 +1005,9 @@
         "name": "env",
         "options": [],
         "query": {
+          "qryType": 1,
           "query": "label_values(env)",
-          "refId": "Prometheus-env-Variable-Query"
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -709,70 +1024,16 @@
           "type": "prometheus",
           "uid": "Prometheus"
         },
-        "definition": "label_values(kafka_server_kafkaserver_brokerstate, instance)",
+        "definition": "label_values(kafka_server_kafkaserver_brokerstate{env=\"${env}\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "Instance",
-        "multi": true,
-        "name": "broker_id",
+        "multi": false,
+        "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(kafka_server_kafkaserver_brokerstate, instance)",
-          "refId": "Prometheus-broker_id-Variable-Query"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": ".*",
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "Prometheus"
-        },
-        "definition": "label_values(user)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "User",
-        "multi": true,
-        "name": "user",
-        "options": [],
-        "query": {
-          "query": "label_values(user)",
-          "refId": "Prometheus-user-Variable-Query"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "allValue": ".*",
-        "current": {},
-        "datasource": {
-          "type": "prometheus",
-          "uid": "Prometheus"
-        },
-        "definition": "label_values(client_id)",
-        "hide": 0,
-        "includeAll": true,
-        "label": "Client Id",
-        "multi": true,
-        "name": "client_id",
-        "options": [],
-        "query": {
-          "query": "label_values(client_id)",
-          "refId": "Prometheus-client_id-Variable-Query"
+          "query": "label_values(kafka_server_kafkaserver_brokerstate{env=\"${env}\"}, instance)",
+          "refId": "StandardVariableQuery"
         },
         "refresh": 1,
         "regex": "",
@@ -786,10 +1047,11 @@
     ]
   },
   "time": {
-    "from": "now-12h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {
+    "hidden": false,
     "refresh_intervals": [
       "10s",
       "30s",
@@ -800,11 +1062,22 @@
       "1h",
       "2h",
       "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
     ]
   },
   "timezone": "",
-  "title": "Kafka Quotas",
-  "uid": "cwWEgYqMz",
-  "version": 1,
+  "title": "Kafka Transaction Coordinator",
+  "uid": "AEadsSQ97mz",
+  "version": 2,
   "weekStart": ""
 }

@@ -19,8 +19,6 @@ services:
       - data-kafka:/var/lib/kafka/data
       - ./docker/kafka/log4j.properties.template:/etc/confluent/docker/log4j.properties.template:ro
     environment:
-      # From Fred
-      # From Fred
       KAFKA_NODE_ID: 1
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT'
       KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:9092'
@@ -28,7 +26,7 @@ services:
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
-      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_JMX_HOSTNAME: broker
       KAFKA_JMX_PORT: 10091
       KAFKA_PROCESS_ROLES: 'broker,controller'
       KAFKA_CONTROLLER_QUORUM_VOTERS: '1@broker:9093'
@@ -83,11 +81,30 @@ services:
       - kafka
     ports:
       - "8081:8081"
+      - "10092:10092"
+    healthcheck:
+      test: [ "CMD", "wget", "-q", "--spider",  "http://localhost:8081" ]
     environment:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:9092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
       SCHEMA_REGISTRY_RESOURCE_EXTENSION_CLASS: "io.confluent.kafka.schemaregistry.rulehandler.RuleSetResourceExtension"
+      SCHEMA_REGISTRY_JMX_PORT: 10092
+      SCHEMA_REGISTRY_JMX_HOSTNAME: schema-registry
+
+  jmx-exporter-schema-registry:
+    image: bitnami/jmx-exporter:latest
+    hostname: jmx-exporter-schema-registry
+    depends_on:
+      schema-registry:
+        condition: service_healthy
+    networks:
+      - kafka
+    ports:
+      - '5557:5557'
+    volumes:
+      - ./docker/jmx-exporter/schema-registry/config.yml:/etc/config.yml
+    command: ["5557", "/etc/config.yml"]
 
   control-center:
     image: confluentinc/cp-enterprise-control-center:${CP_VERSION}

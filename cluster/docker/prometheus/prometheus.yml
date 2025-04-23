@@ -1,59 +1,75 @@
-# my global config
 global:
-  scrape_interval:     15s # By default, scrape targets every 15 seconds.
-  evaluation_interval: 15s # By default, scrape targets every 15 seconds.
-  # scrape_timeout is set to the global default (10s).
+  # How frequently to scrape targets by default.
+  # Default 15s
+  scrape_interval: 60s
+  # How frequently to evaluate rules.
+  # Default 15s
+  evaluation_interval: 15s
+  # How long until a scrape request times out.
+  # Default to 10s.
+  # Required because cp-demo is using cpu throttling, so let's leave enough time to fetch the metrics in particular for the first time as it needs to compile all rexps
+  scrape_timeout: 30s
 
-  # Attach these labels to any time series or alerts when communicating with
-  # external systems (federation, remote storage, Alertmanager).
-  external_labels:
-      monitor: 'my-project'
-
-# Load and evaluate rules in this file every 'evaluation_interval' seconds.
 rule_files:
-  - 'alert.rules'
-  # - "first.rules"
-  # - "second.rules"
+  - "alert.rules"
 
-# alert
 alerting:
   alertmanagers:
-  - scheme: http
-    static_configs:
-    - targets:
-      - "alertmanager:9093"
+    - scheme: http
+      static_configs:
+        - targets:
+            - "alertmanager:9093"
 
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-
-  - job_name: 'prometheus'
-
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 15s
-
+  - job_name: "prometheus"
     static_configs:
-         - targets: ['localhost:9090']
+      - targets: ["localhost:9090"]
 
-  - job_name: 'node-exporter'
 
-    # Override the global default and scrape targets from this job every 5 seconds.
-    scrape_interval: 15s
-  
+  - job_name: "node-exporter"
     static_configs:
-      - targets: ['node-exporter:9101']
-
-  - job_name: 'kafka-broker'
-    scrape_interval: 30s
-    scrape_timeout: 30s
-    static_configs:
-      - targets:
-        - 'jmx-exporter-kafka:5556'
-        labels:
-          env: 'dev'
+      - targets: ["node-exporter:9100"]
     relabel_configs:
       - source_labels: [__address__]
         target_label: hostname
         regex: '([^:]+)(:[0-9]+)?'
         replacement: '${1}'
+
+
+  - job_name: "kafka-broker"
+    static_configs:
+      - targets:
+          - "jmx-exporter-kafka:5556"
+        labels:
+          env: "dev"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: hostname
+        regex: '([^:]+)(:[0-9]+)?'
+        replacement: '${1}'
+
+
+  - job_name: "schema-registry"
+    static_configs:
+      - targets:
+          - "jmx-exporter-schema-registry:5557"
+        labels:
+          env: "dev"
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: hostname
+        regex: '([^:]+)(:[0-9]+)?'
+        replacement: '${1}'
+
+
+#  - job_name: "kafka-lag-exporter"
+#    static_configs:
+#      - targets:
+#          - "kafka-lag-exporter:9999"
+#        labels:
+#          env: "dev"
+#    relabel_configs:
+#      - source_labels: [__address__]
+#        target_label: instance
+#        regex: '([^:]+)(:[0-9]+)?'
+#        replacement: '${1}'

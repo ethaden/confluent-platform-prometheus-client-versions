@@ -169,7 +169,8 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "kafka_controller_kafkacontroller_activecontrollercount{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"} > 0",
+          "editorMode": "code",
+          "expr": "kafka_controller_kafkacontroller_activecontrollercount{job=\"kafka-controller\",env=\"$env\",instance=~\"$instance\"} > 0",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -427,7 +428,8 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "sum(kafka_controller_kafkacontroller_preferredreplicaimbalancecount{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"})",
+          "editorMode": "code",
+          "expr": "sum(kafka_controller_kafkacontroller_preferredreplicaimbalancecount{job=\"kafka-controller\",env=\"$env\",instance=~\"$instance\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -512,7 +514,8 @@
             "type": "prometheus",
             "uid": "Prometheus"
           },
-          "expr": "sum(kafka_controller_controllerstats_uncleanleaderelectionspersec{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"})",
+          "editorMode": "code",
+          "expr": "sum(kafka_controller_controllerstats_uncleanleaderelectionspersec{job=\"kafka-controller\",env=\"$env\",instance=~\"$instance\"})",
           "format": "time_series",
           "instant": true,
           "interval": "",
@@ -550,7 +553,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#508642",
+                "color": "dark-green",
                 "value": null
               },
               {
@@ -637,7 +640,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#508642",
+                "color": "dark-green",
                 "value": null
               },
               {
@@ -725,7 +728,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#508642",
+                "color": "dark-green",
                 "value": null
               },
               {
@@ -811,7 +814,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#508642",
+                "color": "dark-green",
                 "value": null
               },
               {
@@ -899,7 +902,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#508642",
+                "color": "dark-green",
                 "value": null
               },
               {
@@ -1324,7 +1327,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -1336,7 +1340,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 10
+            "y": 18
           },
           "id": 93,
           "links": [],
@@ -1395,7 +1399,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -1407,7 +1412,7 @@
             "h": 4,
             "w": 4,
             "x": 4,
-            "y": 10
+            "y": 18
           },
           "id": 35,
           "links": [],
@@ -1466,7 +1471,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -1478,7 +1484,7 @@
             "h": 4,
             "w": 4,
             "x": 8,
-            "y": 10
+            "y": 18
           },
           "id": 37,
           "links": [],
@@ -1561,7 +1567,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   },
                   {
                     "color": "red",
@@ -1576,7 +1583,7 @@
             "h": 8,
             "w": 12,
             "x": 12,
-            "y": 10
+            "y": 18
           },
           "id": 122,
           "options": {
@@ -1634,7 +1641,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -1646,7 +1654,7 @@
             "h": 4,
             "w": 4,
             "x": 0,
-            "y": 14
+            "y": 22
           },
           "id": 94,
           "links": [],
@@ -1705,7 +1713,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -1717,7 +1726,7 @@
             "h": 4,
             "w": 4,
             "x": 4,
-            "y": 14
+            "y": 22
           },
           "id": 38,
           "links": [],
@@ -1776,7 +1785,8 @@
                 "mode": "absolute",
                 "steps": [
                   {
-                    "color": "green"
+                    "color": "green",
+                    "value": null
                   }
                 ]
               },
@@ -1788,7 +1798,7 @@
             "h": 4,
             "w": 4,
             "x": 8,
-            "y": 14
+            "y": 22
           },
           "id": 36,
           "links": [],
@@ -3568,542 +3578,6 @@
         "x": 0,
         "y": 21
       },
-      "id": 86,
-      "panels": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "description": "Latency in millseconds for ZooKeeper requests from broker.\n",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "ms"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 0,
-            "y": 63
-          },
-          "id": 88,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "8.1.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-              },
-              "expr": "kafka_server_zookeeperclientmetrics_zookeeperrequestlatencyms{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\",quantile=~\"$percentile\"}",
-              "hide": false,
-              "legendFormat": "{{instance}} - {{quantile}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Zookeeper Request Latency",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 9,
-            "w": 12,
-            "x": 12,
-            "y": 63
-          },
-          "id": 92,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "8.1.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-              },
-              "expr": "rate(kafka_server_sessionexpirelistener_zookeepersyncconnectspersec{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}[5m])",
-              "hide": false,
-              "instant": false,
-              "interval": "",
-              "legendFormat": "{{instance}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Zookeeper connections per sec",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 0,
-            "y": 72
-          },
-          "id": 89,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "8.1.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-              },
-              "expr": "rate(kafka_server_sessionexpirelistener_zookeeperexpirespersec{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}[5m])",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "{{instance}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Zookeeper expired connections per sec",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 8,
-            "y": 72
-          },
-          "id": 90,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "8.1.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-              },
-              "expr": "rate(kafka_server_sessionexpirelistener_zookeeperdisconnectspersec{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}[5m])",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "{{instance}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Zookeeper disconnect per sec",
-          "type": "timeseries"
-        },
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {
-              "color": {
-                "mode": "palette-classic"
-              },
-              "custom": {
-                "axisBorderShow": false,
-                "axisCenteredZero": false,
-                "axisColorMode": "text",
-                "axisLabel": "",
-                "axisPlacement": "auto",
-                "barAlignment": 0,
-                "drawStyle": "line",
-                "fillOpacity": 10,
-                "gradientMode": "none",
-                "hideFrom": {
-                  "legend": false,
-                  "tooltip": false,
-                  "viz": false
-                },
-                "insertNulls": false,
-                "lineInterpolation": "linear",
-                "lineWidth": 1,
-                "pointSize": 5,
-                "scaleDistribution": {
-                  "type": "linear"
-                },
-                "showPoints": "never",
-                "spanNulls": true,
-                "stacking": {
-                  "group": "A",
-                  "mode": "none"
-                },
-                "thresholdsStyle": {
-                  "mode": "off"
-                }
-              },
-              "links": [],
-              "mappings": [],
-              "min": 0,
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  {
-                    "color": "green"
-                  },
-                  {
-                    "color": "red",
-                    "value": 80
-                  }
-                ]
-              },
-              "unit": "short"
-            },
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 9,
-            "w": 8,
-            "x": 16,
-            "y": 72
-          },
-          "id": 91,
-          "options": {
-            "legend": {
-              "calcs": [
-                "mean",
-                "lastNotNull",
-                "max"
-              ],
-              "displayMode": "table",
-              "placement": "bottom",
-              "showLegend": true
-            },
-            "tooltip": {
-              "mode": "single",
-              "sort": "none"
-            }
-          },
-          "pluginVersion": "8.1.3",
-          "targets": [
-            {
-              "datasource": {
-                "type": "prometheus",
-                "uid": "Prometheus"
-              },
-              "expr": "rate(kafka_server_sessionexpirelistener_zookeeperauthfailurespersec{job=\"kafka-broker\",env=\"$env\",instance=~\"$instance\"}[5m])",
-              "hide": false,
-              "interval": "",
-              "legendFormat": "{{instance}}",
-              "refId": "A"
-            }
-          ],
-          "title": "Zookeeper auth failures per sec",
-          "type": "timeseries"
-        }
-      ],
-      "targets": [
-        {
-          "datasource": {
-            "type": "prometheus",
-            "uid": "Prometheus"
-          },
-          "refId": "A"
-        }
-      ],
-      "title": "Zookeeper",
-      "type": "row"
-    },
-    {
-      "collapsed": true,
-      "datasource": {
-        "type": "prometheus",
-        "uid": "Prometheus"
-      },
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
-        "y": 22
-      },
       "id": 82,
       "panels": [
         {
@@ -4322,7 +3796,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 23
+        "y": 22
       },
       "id": 53,
       "panels": [
@@ -4541,7 +4015,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 24
+        "y": 23
       },
       "id": 58,
       "panels": [
@@ -5069,7 +4543,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 24
       },
       "id": 68,
       "panels": [
@@ -5574,7 +5048,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 25
       },
       "id": 66,
       "panels": [
@@ -6100,7 +5574,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 27
+        "y": 26
       },
       "id": 148,
       "panels": [
@@ -6320,7 +5794,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 28
+        "y": 27
       },
       "id": 142,
       "panels": [
@@ -6613,7 +6087,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 29
+        "y": 28
       },
       "id": 145,
       "panels": [
@@ -6837,7 +6311,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 30
+        "y": 29
       },
       "id": 102,
       "panels": [
@@ -7648,7 +7122,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 31
+        "y": 30
       },
       "id": 120,
       "panels": [
@@ -7907,7 +7381,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
+        "y": 31
       },
       "id": 46,
       "panels": [
@@ -8193,7 +7667,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 33
+        "y": 32
       },
       "id": 128,
       "panels": [
@@ -8877,6 +8351,6 @@
   "timezone": "browser",
   "title": "Kafka cluster",
   "uid": "qu-QZdfZz",
-  "version": 2,
+  "version": 6,
   "weekStart": ""
-}
+}F
