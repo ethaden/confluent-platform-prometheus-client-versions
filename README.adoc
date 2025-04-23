@@ -10,36 +10,64 @@ This project has been tested with Java version 17 and Gradle version 8.1.1.
 Change to folder `cluster`.
 
 Start the containers by running:
-```
+
+```shell
 docker-compose up -d
 ```
 
 Stopping the containers:
-```
+
+```shell
 docker-compose down
 ```
 
 Cleaning up (CAREFUL: THIS WILL DELETE ALL UNUSED VOLUMES):
-```
+
+```shell
 docker volumes prune
 ```
 
 == Building the Producers
-Initialize by running
-```
+
+Change to the `client` sub folder and initialize by running (might not be necessary as `gradlew` is part of the repository and might be up-to-date):
+
+```shell
 gradle wrapper
 ```
 
-Build Jar including all libraries with:
-```
+Build a shadow jar (which contains all required jars) by running:
+
+```shell
 ./gradlew shadowJar
 ```
 
 == Running the producer
 
+In the `client` sub folder you can use gradle to run the producer, either using the shadow jar:
+
+```shell
+./gradlew -p producer-7.2.1 runShadow
 ```
-java -jar producer-7.2.1/build/libs/kafka-producer-7.2.1-0.0.1.jar configuration/dev.properties input.txt
+
+or directly (relying on gradles runtime classpath):
+
+```shell
+./gradlew -p producer-7.2.1 run --args='../configuration/dev.properties ../input.txt'
 ```
+
+You can also run the shadowJar directly:
+
+```shell
+java -jar producer-7.2.1/build/libs/producer-7.2.1.jar configuration/dev.properties input.txt
+```
+
+
+Just for testing the setup, you can consume the messages by running (in the `client` folder):
+
+```shell
+kafka-avro-console-consumer --bootstrap-server broker:9092 --consumer.config configuration/dev.properties --topic message --from-beginning
+```
+
 
 == Using the Example Platform
 
@@ -75,25 +103,29 @@ java -jar producer-7.2.1/build/libs/kafka-producer-7.2.1-0.0.1.jar configuration
 Note, the docker setup already sets the log level of the request logger to debug. The following explains how to set that log level at runtime.
 
 Show dynamic configs for the broker (broker id is `1` thus we use entity name `1`):
-```
+
+```shell
 kafka-configs --bootstrap-server localhost:10092 --describe \
 --entity-type broker-loggers --entity-name 1
 ```
 
 Set debug level to `DEBUG`:
-```
+
+```shell
 kafka-configs --bootstrap-server localhost:10092 --alter \
   --add-config "kafka.request.logger=DEBUG" \
   --entity-type broker-loggers --entity-name 1
 ```
 
 Check which JMX metrics are available on the broker (you might need to add `kafka` with hostname `127.0.0.1` to your `/etc/hosts` temporarily):
-```
+
+```shell
 jconsole kafka:10091
 ```
 
 Switch of debug logging:
-```
+
+```shell
 kafka-configs --bootstrap-server localhost:10092 --alter \
 --delete-config kafka.request.logger \
 --entity-type broker-loggers --entity-name 1

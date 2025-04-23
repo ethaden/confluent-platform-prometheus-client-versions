@@ -13,6 +13,10 @@ import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
+/*
+NOTE: This class in unused in this demo and will be removed in the future
+ */
+
 public class KafkaTransactionalProducerApplication {
 
 
