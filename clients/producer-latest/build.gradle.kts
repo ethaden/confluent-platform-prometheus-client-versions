@@ -8,8 +8,8 @@ plugins {
     id("com.gradleup.shadow")
 }
 
-// Do NOT update the kafka version (as we want to show an old versio number in the log files!)
-val kafkaVersion = "7.2.1"
+// Update version here!
+val kafkaVersion = "7.9.0"
 
 java {
     toolchain {
@@ -48,7 +48,7 @@ tasks.withType<DependencyUpdatesTask> {
 }
 
 tasks.shadowJar {
-  archiveVersion = "7.2.1"
+  archiveVersion = "7.9.0"
 }
 
 

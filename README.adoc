@@ -41,7 +41,7 @@ Build a shadow jar (which contains all required jars) by running:
 ./gradlew shadowJar
 ```
 
-== Running the producer
+== Running the producers
 
 In the `client` sub folder you can use gradle to run the producer, either using the shadow jar:
 
@@ -61,6 +61,7 @@ You can also run the shadowJar directly:
 java -jar producer-7.2.1/build/libs/producer-7.2.1.jar configuration/dev.properties input.txt
 ```
 
+You can also use the same producer code but pacakged with the (almost) latest version of the Kafka library, by using the commands above but replace the folder name `producer-7.2.1` with `producer-latest`.
 
 Just for testing the setup, you can consume the messages by running (in the `client` folder):
 
@@ -105,14 +106,14 @@ Note, the docker setup already sets the log level of the request logger to debug
 Show dynamic configs for the broker (broker id is `1` thus we use entity name `1`):
 
 ```shell
-kafka-configs --bootstrap-server localhost:10092 --describe \
+docker compose exec broker kafka-configs --bootstrap-server broker:9092 --describe \
 --entity-type broker-loggers --entity-name 1
 ```
 
 Set debug level to `DEBUG`:
 
 ```shell
-kafka-configs --bootstrap-server localhost:10092 --alter \
+docker compose exec broker kafka-configs --bootstrap-server broker:9092 --alter \
   --add-config "kafka.request.logger=DEBUG" \
   --entity-type broker-loggers --entity-name 1
 ```
@@ -126,7 +127,7 @@ jconsole kafka:10091
 Switch of debug logging:
 
 ```shell
-kafka-configs --bootstrap-server localhost:10092 --alter \
+docker compose exec broker kafka-configs --bootstrap-server broker:9092 --alter \
 --delete-config kafka.request.logger \
 --entity-type broker-loggers --entity-name 1
 ```
@@ -143,7 +144,7 @@ docker-compose logs -f kafka
 Whenever a client connects, lines similar to the following will appear in the docker log of the kafka broker.
 
 ```
-kafka_1                   | [2023-05-31 17:24:11,538] INFO Completed request:{"isForwarded":false,"requestHeader":{"requestApiKey":18,"requestApiVersion":3,"correlationId":0,"clientId":"producer-7.2.1","requestApiKeyName":"API_VERSIONS"},"request":{"clientSoftwareName":"apache-kafka-java","clientSoftwareVersion":"7.2.1-ccs"},"response":{"errorCode":0,"apiKeys":[{"apiKey":0,"minVersion":0,"maxVersion":9},{"apiKey":1,"minVersion":0,"maxVersion":13},{"apiKey":2,"minVersion":0,"maxVersion":7},{"apiKey":3,"minVersion":0,"maxVersion":12},{"apiKey":4,"minVersion":0,"maxVersion":6},{"apiKey":5,"minVersion":0,"maxVersion":3},{"apiKey":6,"minVersion":0,"maxVersion":7},{"apiKey":7,"minVersion":0,"maxVersion":3},{"apiKey":8,"minVersion":0,"maxVersion":8},{"apiKey":9,"minVersion":0,"maxVersion":8},{"apiKey":10,"minVersion":0,"maxVersion":4},{"apiKey":11,"minVersion":0,"maxVersion":9},{"apiKey":12,"minVersion":0,"maxVersion":4},{"apiKey":13,"minVersion":0,"maxVersion":5},{"apiKey":14,"minVersion":0,"maxVersion":5},{"apiKey":15,"minVersion":0,"maxVersion":5},{"apiKey":16,"minVersion":0,"maxVersion":4},{"apiKey":17,"minVersion":0,"maxVersion":1},{"apiKey":18,"minVersion":0,"maxVersion":3},{"apiKey":19,"minVersion":0,"maxVersion":7},{"apiKey":20,"minVersion":0,"maxVersion":6},{"apiKey":21,"minVersion":0,"maxVersion":2},{"apiKey":22,"minVersion":0,"maxVersion":4},{"apiKey":23,"minVersion":0,"maxVersion":4},{"apiKey":24,"minVersion":0,"maxVersion":3},{"apiKey":25,"minVersion":0,"maxVersion":3},{"apiKey":26,"minVersion":0,"maxVersion":3},{"apiKey":27,"minVersion":0,"maxVersion":1},{"apiKey":28,"minVersion":0,"maxVersion":3},{"apiKey":29,"minVersion":0,"maxVersion":2},{"apiKey":30,"minVersion":0,"maxVersion":2},{"apiKey":31,"minVersion":0,"maxVersion":2},{"apiKey":32,"minVersion":0,"maxVersion":4},{"apiKey":33,"minVersion":0,"maxVersion":2},{"apiKey":34,"minVersion":0,"maxVersion":2},{"apiKey":35,"minVersion":0,"maxVersion":3},{"apiKey":36,"minVersion":0,"maxVersion":2},{"apiKey":37,"minVersion":0,"maxVersion":3},{"apiKey":38,"minVersion":0,"maxVersion":2},{"apiKey":39,"minVersion":0,"maxVersion":2},{"apiKey":40,"minVersion":0,"maxVersion":2},{"apiKey":41,"minVersion":0,"maxVersion":2},{"apiKey":42,"minVersion":0,"maxVersion":2},{"apiKey":43,"minVersion":0,"maxVersion":2},{"apiKey":44,"minVersion":0,"maxVersion":1},{"apiKey":45,"minVersion":0,"maxVersion":0},{"apiKey":46,"minVersion":0,"maxVersion":0},{"apiKey":47,"minVersion":0,"maxVersion":0},{"apiKey":48,"minVersion":0,"maxVersion":1},{"apiKey":49,"minVersion":0,"maxVersion":1},{"apiKey":50,"minVersion":0,"maxVersion":0},{"apiKey":51,"minVersion":0,"maxVersion":0},{"apiKey":56,"minVersion":0,"maxVersion":1},{"apiKey":57,"minVersion":0,"maxVersion":1},{"apiKey":60,"minVersion":0,"maxVersion":0},{"apiKey":61,"minVersion":0,"maxVersion":0},{"apiKey":65,"minVersion":0,"maxVersion":0},{"apiKey":66,"minVersion":0,"maxVersion":0},{"apiKey":67,"minVersion":0,"maxVersion":0},{"apiKey":10000,"minVersion":0,"maxVersion":3},{"apiKey":10001,"minVersion":0,"maxVersion":1},{"apiKey":10002,"minVersion":0,"maxVersion":3},{"apiKey":10003,"minVersion":0,"maxVersion":3},{"apiKey":10004,"minVersion":0,"maxVersion":1},{"apiKey":10005,"minVersion":0,"maxVersion":0},{"apiKey":10006,"minVersion":0,"maxVersion":3},{"apiKey":10007,"minVersion":0,"maxVersion":2},{"apiKey":10008,"minVersion":0,"maxVersion":1},{"apiKey":10009,"minVersion":0,"maxVersion":2},{"apiKey":10010,"minVersion":0,"maxVersion":0},{"apiKey":10011,"minVersion":0,"maxVersion":1},{"apiKey":10012,"minVersion":0,"maxVersion":0},{"apiKey":10013,"minVersion":0,"maxVersion":1},{"apiKey":10014,"minVersion":0,"maxVersion":1},{"apiKey":10015,"minVersion":0,"maxVersion":0},{"apiKey":10016,"minVersion":0,"maxVersion":0},{"apiKey":10017,"minVersion":0,"maxVersion":0},{"apiKey":10018,"minVersion":0,"maxVersion":0},{"apiKey":10019,"minVersion":0,"maxVersion":0},{"apiKey":10020,"minVersion":0,"maxVersion":0},{"apiKey":10021,"minVersion":0,"maxVersion":0},{"apiKey":10022,"minVersion":0,"maxVersion":1}],"throttleTimeMs":0,"finalizedFeaturesEpoch":0},"connection":"172.18.0.9:10092-172.18.0.1:55030-3","clientAddress":"172.18.0.1","totalTimeMs":0.28,"requestQueueTimeMs":0.096,"localTimeMs":0.008,"remoteTimeMs":0.092,"throttleTimeMs":0,"responseQueueTimeMs":0.022,"sendTimeMs":0.06,"securityProtocol":"PLAINTEXT","principal":{"class":"KafkaPrincipal","type":"User","name":"ANONYMOUS","tokenAuthenticated":false},"listener":"OUT_DOCKER","clientInformation":{"softwareName":"unknown","softwareVersion":"unknown"},"isDisconnectedClient":false} (kafka.request.logger)
+broker                   | [2023-05-31 17:24:11,538] INFO Completed request:{"isForwarded":false,"requestHeader":{"requestApiKey":18,"requestApiVersion":3,"correlationId":0,"clientId":"producer-7.2.1","requestApiKeyName":"API_VERSIONS"},"request":{"clientSoftwareName":"apache-kafka-java","clientSoftwareVersion":"7.2.1-ccs"},"response":{"errorCode":0,"apiKeys":[{"apiKey":0,"minVersion":0,"maxVersion":9},{"apiKey":1,"minVersion":0,"maxVersion":13},{"apiKey":2,"minVersion":0,"maxVersion":7},{"apiKey":3,"minVersion":0,"maxVersion":12},{"apiKey":4,"minVersion":0,"maxVersion":6},{"apiKey":5,"minVersion":0,"maxVersion":3},{"apiKey":6,"minVersion":0,"maxVersion":7},{"apiKey":7,"minVersion":0,"maxVersion":3},{"apiKey":8,"minVersion":0,"maxVersion":8},{"apiKey":9,"minVersion":0,"maxVersion":8},{"apiKey":10,"minVersion":0,"maxVersion":4},{"apiKey":11,"minVersion":0,"maxVersion":9},{"apiKey":12,"minVersion":0,"maxVersion":4},{"apiKey":13,"minVersion":0,"maxVersion":5},{"apiKey":14,"minVersion":0,"maxVersion":5},{"apiKey":15,"minVersion":0,"maxVersion":5},{"apiKey":16,"minVersion":0,"maxVersion":4},{"apiKey":17,"minVersion":0,"maxVersion":1},{"apiKey":18,"minVersion":0,"maxVersion":3},{"apiKey":19,"minVersion":0,"maxVersion":7},{"apiKey":20,"minVersion":0,"maxVersion":6},{"apiKey":21,"minVersion":0,"maxVersion":2},{"apiKey":22,"minVersion":0,"maxVersion":4},{"apiKey":23,"minVersion":0,"maxVersion":4},{"apiKey":24,"minVersion":0,"maxVersion":3},{"apiKey":25,"minVersion":0,"maxVersion":3},{"apiKey":26,"minVersion":0,"maxVersion":3},{"apiKey":27,"minVersion":0,"maxVersion":1},{"apiKey":28,"minVersion":0,"maxVersion":3},{"apiKey":29,"minVersion":0,"maxVersion":2},{"apiKey":30,"minVersion":0,"maxVersion":2},{"apiKey":31,"minVersion":0,"maxVersion":2},{"apiKey":32,"minVersion":0,"maxVersion":4},{"apiKey":33,"minVersion":0,"maxVersion":2},{"apiKey":34,"minVersion":0,"maxVersion":2},{"apiKey":35,"minVersion":0,"maxVersion":3},{"apiKey":36,"minVersion":0,"maxVersion":2},{"apiKey":37,"minVersion":0,"maxVersion":3},{"apiKey":38,"minVersion":0,"maxVersion":2},{"apiKey":39,"minVersion":0,"maxVersion":2},{"apiKey":40,"minVersion":0,"maxVersion":2},{"apiKey":41,"minVersion":0,"maxVersion":2},{"apiKey":42,"minVersion":0,"maxVersion":2},{"apiKey":43,"minVersion":0,"maxVersion":2},{"apiKey":44,"minVersion":0,"maxVersion":1},{"apiKey":45,"minVersion":0,"maxVersion":0},{"apiKey":46,"minVersion":0,"maxVersion":0},{"apiKey":47,"minVersion":0,"maxVersion":0},{"apiKey":48,"minVersion":0,"maxVersion":1},{"apiKey":49,"minVersion":0,"maxVersion":1},{"apiKey":50,"minVersion":0,"maxVersion":0},{"apiKey":51,"minVersion":0,"maxVersion":0},{"apiKey":56,"minVersion":0,"maxVersion":1},{"apiKey":57,"minVersion":0,"maxVersion":1},{"apiKey":60,"minVersion":0,"maxVersion":0},{"apiKey":61,"minVersion":0,"maxVersion":0},{"apiKey":65,"minVersion":0,"maxVersion":0},{"apiKey":66,"minVersion":0,"maxVersion":0},{"apiKey":67,"minVersion":0,"maxVersion":0},{"apiKey":10000,"minVersion":0,"maxVersion":3},{"apiKey":10001,"minVersion":0,"maxVersion":1},{"apiKey":10002,"minVersion":0,"maxVersion":3},{"apiKey":10003,"minVersion":0,"maxVersion":3},{"apiKey":10004,"minVersion":0,"maxVersion":1},{"apiKey":10005,"minVersion":0,"maxVersion":0},{"apiKey":10006,"minVersion":0,"maxVersion":3},{"apiKey":10007,"minVersion":0,"maxVersion":2},{"apiKey":10008,"minVersion":0,"maxVersion":1},{"apiKey":10009,"minVersion":0,"maxVersion":2},{"apiKey":10010,"minVersion":0,"maxVersion":0},{"apiKey":10011,"minVersion":0,"maxVersion":1},{"apiKey":10012,"minVersion":0,"maxVersion":0},{"apiKey":10013,"minVersion":0,"maxVersion":1},{"apiKey":10014,"minVersion":0,"maxVersion":1},{"apiKey":10015,"minVersion":0,"maxVersion":0},{"apiKey":10016,"minVersion":0,"maxVersion":0},{"apiKey":10017,"minVersion":0,"maxVersion":0},{"apiKey":10018,"minVersion":0,"maxVersion":0},{"apiKey":10019,"minVersion":0,"maxVersion":0},{"apiKey":10020,"minVersion":0,"maxVersion":0},{"apiKey":10021,"minVersion":0,"maxVersion":0},{"apiKey":10022,"minVersion":0,"maxVersion":1}],"throttleTimeMs":0,"finalizedFeaturesEpoch":0},"connection":"172.18.0.9:10092-172.18.0.1:55030-3","clientAddress":"172.18.0.1","totalTimeMs":0.28,"requestQueueTimeMs":0.096,"localTimeMs":0.008,"remoteTimeMs":0.092,"throttleTimeMs":0,"responseQueueTimeMs":0.022,"sendTimeMs":0.06,"securityProtocol":"PLAINTEXT","principal":{"class":"KafkaPrincipal","type":"User","name":"ANONYMOUS","tokenAuthenticated":false},"listener":"OUT_DOCKER","clientInformation":{"softwareName":"unknown","softwareVersion":"unknown"},"isDisconnectedClient":false} (kafka.request.logger)
 ```
 
 The client ID and the client software version can easily be extracted from those lines.
@@ -200,3 +201,17 @@ log4j.logger.kafka.authorizer.logger=WARN
 ```
 
 The magic is to use the `filter` to allow all critical events first (`FATAL`, `ERROR`, `WARN`). Then all lines where the API_Version is requested are allowed. Finally, all other debug messages are filtered.
+
+== Updating this demo
+
+The docker-based Kafka cluster setup can to be updated manually. Potentially, updating the version of CP in the `cluster/.env` file is sufficient.
+
+The Java libraries can be updated manually, but with support by the automatic dependency check provided by the https://github.com/ben-manes/gradle-versions-plugin[Gradle Version Plugin]. Just run the following to identify outdated libraries:
+
+```shell
+./gradlew dependencyUpdates
+```
+
+Gradle plugins versions are managed centrally in `gradle.properties` so they need to be updated there. 
+
+Almost all Java library versions are managed in the gradle config files in `buildSrc/src/main/kotlin`. Only the kafka client version is managed directly in each subprojet in the `build.gradle.kts`  for better flexibility. For the `producer-7.2.1` example, all Kafka-specific libraries should be kept as-is, for obvious reasons.
