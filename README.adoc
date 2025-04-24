@@ -118,11 +118,15 @@ docker compose exec broker kafka-configs --bootstrap-server broker:9092 --alter 
   --entity-type broker-loggers --entity-name 1
 ```
 
-Check which JMX metrics are available on the broker (you might need to add `kafka` with hostname `127.0.0.1` to your `/etc/hosts` temporarily):
+Check which JMX metrics are available on the broker (you might need to add `broker` with hostname `127.0.0.1` to your `/etc/hosts` temporarily):
 
 ```shell
-jconsole kafka:10091
+jconsole broker:10091
 ```
+
+The MBean `kafka.server:clientSoftwareName=(client-software-name),clientSoftwareVersion=(client-software-version),listener=(listener),networkProcessor=(processor-index),type=(type)` provides information about the used client library and the version.
+
+In Prometheus, have a look at the metric called `kafka_server_socketservermetrics_connections` (as configured in the JMX exporter for the broker metrics). Please note that you won't see any client ID, principal, or similar. You just see the name of the library and the version. Thus, this MBean is not useful for identifying the users of outdated versions of Kafka libraries.
 
 Switch of debug logging:
 
@@ -215,3 +219,7 @@ The Java libraries can be updated manually, but with support by the automatic de
 Gradle plugins versions are managed centrally in `gradle.properties` so they need to be updated there. 
 
 Almost all Java library versions are managed in the gradle config files in `buildSrc/src/main/kotlin`. Only the kafka client version is managed directly in each subprojet in the `build.gradle.kts`  for better flexibility. For the `producer-7.2.1` example, all Kafka-specific libraries should be kept as-is, for obvious reasons.
+
+== Conclusion
+
+Until KIP-714 is supported in Confluent Platform, the only way to map client software names and versions to the corresponding clientIds or principals (the latter has not been demonstrated in this demo) is by enabling the DEBUG log level for the Kafka request logger and monitor the requests.
